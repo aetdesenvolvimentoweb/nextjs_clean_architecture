@@ -1,0 +1,4 @@
+{
+  "./*.(ts|js|json)": "pnpm eslint --fix",
+  "./src/**/*.(ts|tsx|js|jsx)": "pnpm eslint --fix"
+}
