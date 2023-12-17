@@ -14,6 +14,11 @@ const makeSut = (): SutResponse => {
 };
 
 describe("GetCategoryByIdService", () => {
+  test("should be throws if no ID is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(sut.getById("")).rejects.toThrow();
+  });
   test("should be return a category if a registered ID is provided", async () => {
     const { sut } = makeSut();
 
