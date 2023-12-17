@@ -9,4 +9,8 @@ export class MockCategoryRepository implements CategoryRepository {
   getByName = async (name: string): Promise<Category | null> => {
     return null;
   };
+
+  getById = async (id: string): Promise<Category | null> => {
+    return { id: "any_id", name: "any_category" };
+  };
 }
