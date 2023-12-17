@@ -1,3 +1,3 @@
 export interface MissingParamValidation {
-  check: (data: any) => void;
+  checkMissing: (data: any) => void;
 }

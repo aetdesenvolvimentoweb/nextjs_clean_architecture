@@ -1,3 +1,3 @@
 export interface DuplicatedUniqueKeyValidation {
-  check: (key: any) => void;
+  checkDuplicated: (key: any) => Promise<void>;
 }
