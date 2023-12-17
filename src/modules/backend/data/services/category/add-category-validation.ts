@@ -19,7 +19,8 @@ export class AddCategoryDataValidation
 
   checkDuplicated = async (key: string): Promise<void> => {
     const isAlreadyRegistered = await this.categoryRepository.getByName(key);
-    if (isAlreadyRegistered) {
+
+    if (isAlreadyRegistered && isAlreadyRegistered.name === key) {
       throw new CustomAppError(
         "Já existe uma categoria registrada com esse nome."
       );
