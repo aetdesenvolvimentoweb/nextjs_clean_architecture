@@ -1,7 +1,7 @@
 import { AddCategory, Category } from "@/modules/backend/domain/entities";
 import { AddCategoryUseCase } from "@/modules/backend/domain/usecases/category";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
-import { AddCategoryDataValidation } from "./add-category-validation";
+import { AddCategoryDataValidation } from ".";
 
 export class AddCategoryService implements AddCategoryUseCase {
   private readonly addCategoryDataValidation: AddCategoryDataValidation;

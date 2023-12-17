@@ -2,7 +2,7 @@ import {
   DuplicatedUniqueKeyValidation,
   MissingParamValidation,
 } from "@/modules/backend/domain/validations";
-import { CategoryRepository } from "../../repositories";
+import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { CustomAppError } from "@/modules/backend/domain/errors";
 import { AddCategory } from "@/modules/backend/domain/entities";
 
