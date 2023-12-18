@@ -24,6 +24,15 @@ describe("UpdateCategoryService", () => {
       })
     ).rejects.toThrow(missingParamError("ID"));
   });
+  test("should be throws if no name is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(
+      sut.update("any_id", {
+        name: "",
+      })
+    ).rejects.toThrow(missingParamError("nome"));
+  });
   test("should be return a updated category if correct data is provided", async () => {
     const { categoryRepository, sut } = makeSut();
     jest.spyOn(categoryRepository, "getById").mockResolvedValueOnce({
