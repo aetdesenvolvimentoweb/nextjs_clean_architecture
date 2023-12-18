@@ -3,7 +3,10 @@ import {
   RegisteredIdValidation,
 } from "@/modules/backend/domain/validations";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
-import { CustomAppError } from "@/modules/backend/domain/errors";
+import {
+  missingParamError,
+  noRegisteredError,
+} from "@/modules/backend/data/helpers";
 
 export class GetCategoryByIdValidation
   implements MissingParamValidation, RegisteredIdValidation
@@ -11,12 +14,8 @@ export class GetCategoryByIdValidation
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   checkMissing = (data: string): void => {
-    console.log("id chegou", data);
-
     if (!data) {
-      console.log("entrou no erro");
-
-      throw new CustomAppError("Preencha o campo ID.");
+      throw missingParamError("id");
     }
   };
 
@@ -24,7 +23,7 @@ export class GetCategoryByIdValidation
     const existsCategory = await this.categoryRepository.getById(id);
 
     if (!existsCategory || existsCategory.id !== id) {
-      throw new CustomAppError("Nenhuma categoria encontrada com esse ID.");
+      throw noRegisteredError("categoria");
     }
   };
 }

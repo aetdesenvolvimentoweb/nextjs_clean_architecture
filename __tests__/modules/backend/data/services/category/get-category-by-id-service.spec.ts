@@ -1,7 +1,10 @@
 import { GetCategoryByIdService } from "@/modules/backend/data/services/category";
 import { MockCategoryRepository } from "@/../__mocks__/modules/backend/data/repositories";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
-import { CustomAppError } from "@/modules/backend/domain/errors";
+import {
+  missingParamError,
+  noRegisteredError,
+} from "@/modules/backend/data/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -18,15 +21,13 @@ describe("GetCategoryByIdService", () => {
   test("should be throws if no ID is provided", async () => {
     const { sut } = makeSut();
 
-    await expect(sut.getById("")).rejects.toThrow(
-      new CustomAppError("Preencha o campo ID.")
-    );
+    await expect(sut.getById("")).rejects.toThrow(missingParamError("id"));
   });
   test("should be throws if no registered ID is provided", async () => {
     const { sut } = makeSut();
 
     await expect(sut.getById("no_registered_id")).rejects.toThrow(
-      new CustomAppError("Nenhuma categoria encontrada com esse ID.")
+      noRegisteredError("categoria")
     );
   });
   test("should be return a category if a registered ID is provided", async () => {
