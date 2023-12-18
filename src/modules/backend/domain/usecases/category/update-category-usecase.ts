@@ -1,4 +1,4 @@
-import { Category } from "../../entities";
+import { Category } from "@/modules/backend/domain/entities";
 
 export interface UpdateCategoryUsecase {
   update: (id: string, data: ParamsUpdate) => Promise<Category>;
