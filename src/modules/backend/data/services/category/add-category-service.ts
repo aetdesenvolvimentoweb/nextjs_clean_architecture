@@ -1,9 +1,9 @@
 import { AddCategory, Category } from "@/modules/backend/domain/entities";
-import { AddCategoryUseCase } from "@/modules/backend/domain/usecases/category";
+import { AddCategoryUsecase } from "@/modules/backend/domain/usecases/category";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { AddCategoryDataValidation } from ".";
 
-export class AddCategoryService implements AddCategoryUseCase {
+export class AddCategoryService implements AddCategoryUsecase {
   private readonly addCategoryDataValidation: AddCategoryDataValidation;
 
   constructor(private readonly categoryRepository: CategoryRepository) {
