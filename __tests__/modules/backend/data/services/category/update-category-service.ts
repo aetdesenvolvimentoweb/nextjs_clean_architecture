@@ -1,7 +1,10 @@
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { UpdateCategoryService } from "@/modules/backend/data/services/category/update-category-service";
 import { MockCategoryRepository } from "@/../__mocks__/modules/backend/data/repositories";
-import { missingParamError } from "@/modules/backend/data/helpers";
+import {
+  missingParamError,
+  noRegisteredError,
+} from "@/modules/backend/data/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -32,6 +35,15 @@ describe("UpdateCategoryService", () => {
         name: "",
       })
     ).rejects.toThrow(missingParamError("nome"));
+  });
+  test("should be throws if no registered id is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(
+      sut.update("no_registered_id", {
+        name: "updated_category",
+      })
+    ).rejects.toThrow(noRegisteredError("categoria"));
   });
   test("should be return a updated category if correct data is provided", async () => {
     const { categoryRepository, sut } = makeSut();
