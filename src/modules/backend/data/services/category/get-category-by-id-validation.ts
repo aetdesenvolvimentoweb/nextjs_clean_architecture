@@ -11,7 +11,11 @@ export class GetCategoryByIdValidation
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   checkMissing = (data: string): void => {
+    console.log("id chegou", data);
+
     if (!data) {
+      console.log("entrou no erro");
+
       throw new CustomAppError("Preencha o campo ID.");
     }
   };
@@ -19,7 +23,7 @@ export class GetCategoryByIdValidation
   checkExist = async (id: string): Promise<void> => {
     const existsCategory = await this.categoryRepository.getById(id);
 
-    if (!existsCategory) {
+    if (!existsCategory || existsCategory.id !== id) {
       throw new CustomAppError("Nenhuma categoria encontrada com esse ID.");
     }
   };
