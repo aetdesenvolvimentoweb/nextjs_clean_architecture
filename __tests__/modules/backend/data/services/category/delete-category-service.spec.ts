@@ -23,4 +23,11 @@ describe("DeleteCategoryService", () => {
 
     await expect(sut.delete("")).rejects.toThrow(missingParamError("id"));
   });
+  test("should be throws if no registered ID is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(sut.delete("no_registered_id")).rejects.toThrow(
+      noRegisteredError("categoria")
+    );
+  });
 });
