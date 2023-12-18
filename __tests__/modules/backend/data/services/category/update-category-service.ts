@@ -1,6 +1,7 @@
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { UpdateCategoryService } from "@/modules/backend/data/services/category/update-category-service";
 import { MockCategoryRepository } from "@/../__mocks__/modules/backend/data/repositories";
+import { missingParamError } from "@/modules/backend/data/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -14,6 +15,15 @@ const makeSut = (): SutResponse => {
 };
 
 describe("UpdateCategoryService", () => {
+  test("should be throws if no id is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(
+      sut.update("", {
+        name: "updated_category",
+      })
+    ).rejects.toThrow(missingParamError("ID"));
+  });
   test("should be return a updated category if correct data is provided", async () => {
     const { categoryRepository, sut } = makeSut();
     jest.spyOn(categoryRepository, "getById").mockResolvedValueOnce({
