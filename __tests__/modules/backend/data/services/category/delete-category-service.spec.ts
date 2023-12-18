@@ -30,4 +30,12 @@ describe("DeleteCategoryService", () => {
       noRegisteredError("categoria")
     );
   });
+  test("should be returns the deleted category if correct data is provided", async () => {
+    const { categoryRepository, sut } = makeSut();
+    jest
+      .spyOn(categoryRepository, "getById")
+      .mockResolvedValue({ id: "any_id", name: "any_category" });
+
+    await expect(sut.delete("any_id")).resolves.not.toThrow();
+  });
 });
