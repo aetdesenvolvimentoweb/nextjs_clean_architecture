@@ -1,5 +1,6 @@
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { AddCategory, Category } from "@/modules/backend/domain/entities";
+import { ParamsUpdate } from "@/modules/backend/domain/usecases/category";
 
 export class MockCategoryRepository implements CategoryRepository {
   add = async (data: AddCategory): Promise<Category> => {
@@ -23,5 +24,9 @@ export class MockCategoryRepository implements CategoryRepository {
 
   getById = async (id: string): Promise<Category | null> => {
     return null;
+  };
+
+  update = async (id: string, data: ParamsUpdate): Promise<Category> => {
+    return { id, ...data };
   };
 }
