@@ -6,6 +6,10 @@ export class MockCategoryRepository implements CategoryRepository {
     return { id: "any_id", ...data };
   };
 
+  delete = async (id: string): Promise<Category> => {
+    return { id: "any_id", name: "any_category" };
+  };
+
   getByName = async (name: string): Promise<Category | null> => {
     return null;
   };
