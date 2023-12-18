@@ -24,4 +24,13 @@ describe("GetAllCategoriesService", () => {
     expect(categories[0]).toHaveProperty("id");
     expect(categories[0]).toHaveProperty("name");
   });
+  test("should be return an empty array if not that found categories", async () => {
+    const { categoryRepository, sut } = makeSut();
+    jest.spyOn(categoryRepository, "getAll").mockResolvedValueOnce([]);
+
+    const categories = await sut.getAll();
+
+    expect(Array.isArray(categories)).toBe(true);
+    expect(categories.length).toBe(0);
+  });
 });
