@@ -1,20 +1,17 @@
 import { GetCategoryByIdUsecase } from "@/modules/backend/domain/usecases/category";
-import { GetCategoryByIdValidation } from ".";
+import { CategoryValidation } from "@/modules/backend/data/validations";
 import { Category } from "@/modules/backend/domain/entities";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 
 export class GetCategoryByIdService implements GetCategoryByIdUsecase {
-  private readonly getCategoryByIdValidation: GetCategoryByIdValidation;
-
-  constructor(private readonly categoryRepository: CategoryRepository) {
-    this.getCategoryByIdValidation = new GetCategoryByIdValidation(
-      categoryRepository
-    );
-  }
+  constructor(
+    private readonly categoryRepository: CategoryRepository,
+    private readonly categoryValidation: CategoryValidation
+  ) {}
 
   getById = async (id: string): Promise<Category | null> => {
-    this.getCategoryByIdValidation.checkMissing(id);
-    await this.getCategoryByIdValidation.checkExist(id);
+    this.categoryValidation.isValid(id);
+    await this.categoryValidation.isRegistered(id);
 
     return await this.categoryRepository.getById(id);
   };

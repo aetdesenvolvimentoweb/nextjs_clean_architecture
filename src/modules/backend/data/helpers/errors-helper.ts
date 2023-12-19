@@ -7,6 +7,10 @@ export const duplicatedKeyError = (key: string) => {
   );
 };
 
+export const invalidParamError = (param: string) => {
+  return new CustomAppError(`Valor inválido para o campo ${param}.`, 400);
+};
+
 export const missingParamError = (param: string) => {
   return new CustomAppError(`Preencha o campo ${param}.`, 400);
 };

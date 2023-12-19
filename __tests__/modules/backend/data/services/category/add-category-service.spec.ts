@@ -1,10 +1,14 @@
 import { AddCategoryService } from "@/modules/backend/data/services/category/add-category-service";
-import { MockCategoryRepository } from "@/../__mocks__/modules/backend/data/repositories";
+import {
+  MockCategoryRepository,
+  MockIdValidator,
+} from "@/../__mocks__/modules/backend/data/repositories";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import {
   duplicatedKeyError,
   missingParamError,
 } from "@/modules/backend/data/helpers";
+import { CategoryValidation } from "@/modules/backend/data/validations";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -13,7 +17,12 @@ interface SutResponse {
 
 const makeSut = (): SutResponse => {
   const categoryRepository = new MockCategoryRepository();
-  const sut = new AddCategoryService(categoryRepository);
+  const idValidator = new MockIdValidator();
+  const categoryValidation = new CategoryValidation(
+    categoryRepository,
+    idValidator
+  );
+  const sut = new AddCategoryService(categoryRepository, categoryValidation);
   return { categoryRepository, sut };
 };
 
