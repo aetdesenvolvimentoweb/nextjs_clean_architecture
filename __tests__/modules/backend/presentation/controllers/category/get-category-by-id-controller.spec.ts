@@ -31,6 +31,14 @@ const makeSut = (): SutResponse => {
 };
 
 describe("GetCategoryByIdController", () => {
+  test("should be return 400 if no id is provided", async () => {
+    const { sut } = makeSut();
+
+    const httpResponse = await sut.handle({});
+
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.error).toBe(missingParamError("ID").message);
+  });
   test("should be return 200 if category is found", async () => {
     const { categoryRepository, sut } = makeSut();
     jest
