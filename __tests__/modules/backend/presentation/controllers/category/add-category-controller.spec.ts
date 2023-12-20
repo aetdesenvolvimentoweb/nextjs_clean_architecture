@@ -7,11 +7,7 @@ import {
 } from "@/../__mocks__/modules/backend/data/repositories";
 import { missingParamError } from "@/modules/backend/data/helpers";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
-import {
-  clientError,
-  createWithSuccess,
-  serverError,
-} from "@/modules/backend/presentation/helpers";
+import { serverError } from "@/modules/backend/presentation/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -38,23 +34,23 @@ describe("AddCategoryController", () => {
   test("should be return 400 if no name is provided", async () => {
     const { sut } = makeSut();
 
-    await expect(sut.handle({ body: { name: "" } })).resolves.toEqual(
-      clientError(missingParamError("nome"))
-    );
+    const httpResponse = await sut.handle({ body: { name: "" } });
+
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.error).toBe(missingParamError("nome").message);
   });
   test("should be return 201 if category is created", async () => {
     const { sut } = makeSut();
 
-    await expect(
-      sut.handle({ body: { name: "any_category" } })
-    ).resolves.toEqual(createWithSuccess());
+    const httpResponse = await sut.handle({ body: { name: "any_category" } });
+
+    expect(httpResponse.statusCode).toBe(201);
   });
   test("should be return 500 if server fails", async () => {
     const { categoryRepository, sut } = makeSut();
     jest.spyOn(categoryRepository, "add").mockRejectedValueOnce(serverError());
 
-    await expect(
-      sut.handle({ body: { name: "any_category" } })
-    ).resolves.toEqual(serverError());
+    const httpResponse = await sut.handle({ body: { name: "any_category" } });
+    expect(httpResponse.statusCode).toBe(500);
   });
 });
