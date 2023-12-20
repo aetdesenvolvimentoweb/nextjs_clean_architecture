@@ -4,9 +4,14 @@ import { AddCategoryController } from "@/modules/backend/presentation/controller
 import {
   MockCategoryRepository,
   MockIdValidator,
-} from "../../../../../../__mocks__/modules/backend/data/repositories";
+} from "@/../__mocks__/modules/backend/data/repositories";
 import { missingParamError } from "@/modules/backend/data/helpers";
 import { CategoryRepository } from "@/modules/backend/data/repositories";
+import {
+  clientError,
+  createWithSuccess,
+  serverError,
+} from "@/modules/backend/presentation/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -33,30 +38,23 @@ describe("AddCategoryController", () => {
   test("should be return 400 if no name is provided", async () => {
     const { sut } = makeSut();
 
-    await expect(sut.handle({ body: { name: "" } })).resolves.toEqual({
-      error: missingParamError("nome").message,
-      statusCode: 400,
-    });
+    await expect(sut.handle({ body: { name: "" } })).resolves.toEqual(
+      clientError(missingParamError("nome"))
+    );
   });
   test("should be return 201 if category is created", async () => {
     const { sut } = makeSut();
 
     await expect(
       sut.handle({ body: { name: "any_category" } })
-    ).resolves.toEqual({ statusCode: 201 });
+    ).resolves.toEqual(createWithSuccess());
   });
   test("should be return 500 if server fails", async () => {
     const { categoryRepository, sut } = makeSut();
-    jest.spyOn(categoryRepository, "add").mockRejectedValueOnce({
-      error: "Um erro inesperado aconteceu.",
-      statusCode: 500,
-    });
+    jest.spyOn(categoryRepository, "add").mockRejectedValueOnce(serverError());
 
     await expect(
       sut.handle({ body: { name: "any_category" } })
-    ).resolves.toEqual({
-      error: "Um erro inesperado aconteceu.",
-      statusCode: 500,
-    });
+    ).resolves.toEqual(serverError());
   });
 });

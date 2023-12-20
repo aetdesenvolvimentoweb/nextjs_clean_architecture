@@ -1,7 +1,14 @@
 import { AddCategoryService } from "@/modules/backend/data/services/category";
-import { Controller, HttpRequest, HttpResponse } from "../../protocols";
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+} from "@/modules/backend/presentation/protocols";
 import { AddCategory } from "@/modules/backend/domain/entities";
-import { CustomAppError } from "@/modules/backend/domain/errors";
+import {
+  createWithSuccess,
+  customAppError,
+} from "@/modules/backend/presentation/helpers";
 
 export class AddCategoryController implements Controller {
   constructor(private readonly addCategoryService: AddCategoryService) {}
@@ -11,15 +18,9 @@ export class AddCategoryController implements Controller {
       const data: AddCategory = request.body;
       await this.addCategoryService.add(data);
 
-      return { statusCode: 201 };
+      return createWithSuccess();
     } catch (error: any) {
-      if (error instanceof CustomAppError) {
-        return { error: error.message, statusCode: error.statusCode };
-      }
-      return {
-        error: "Um erro inesperado aconteceu.",
-        statusCode: 500,
-      };
+      return customAppError(error);
     }
   };
 }
