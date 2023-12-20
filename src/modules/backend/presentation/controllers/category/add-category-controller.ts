@@ -17,7 +17,7 @@ export class AddCategoryController implements Controller {
         return { error: error.message, statusCode: error.statusCode };
       }
       return {
-        error: `Um erro inesperado aconteceu: ${error.message}`,
+        error: "Um erro inesperado aconteceu.",
         statusCode: 500,
       };
     }

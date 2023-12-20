@@ -6,8 +6,10 @@ import {
   MockIdValidator,
 } from "../../../../../../__mocks__/modules/backend/data/repositories";
 import { missingParamError } from "@/modules/backend/data/helpers";
+import { CategoryRepository } from "@/modules/backend/data/repositories";
 
 interface SutResponse {
+  categoryRepository: CategoryRepository;
   sut: AddCategoryController;
 }
 
@@ -24,7 +26,7 @@ const makeSut = (): SutResponse => {
   );
   const sut = new AddCategoryController(addCategoryService);
 
-  return { sut };
+  return { categoryRepository, sut };
 };
 
 describe("AddCategoryController", () => {
@@ -42,5 +44,19 @@ describe("AddCategoryController", () => {
     await expect(
       sut.handle({ body: { name: "any_category" } })
     ).resolves.toEqual({ statusCode: 201 });
+  });
+  test("should be return 500 if server fails", async () => {
+    const { categoryRepository, sut } = makeSut();
+    jest.spyOn(categoryRepository, "add").mockRejectedValueOnce({
+      error: "Um erro inesperado aconteceu.",
+      statusCode: 500,
+    });
+
+    await expect(
+      sut.handle({ body: { name: "any_category" } })
+    ).resolves.toEqual({
+      error: "Um erro inesperado aconteceu.",
+      statusCode: 500,
+    });
   });
 });
