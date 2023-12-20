@@ -3,14 +3,20 @@ import { DeleteCategoryController } from "@/modules/backend/presentation/control
 import {
   MockCategoryRepository,
   MockIdValidator,
-} from "../../../../../../__mocks__/modules/backend/data/repositories";
+} from "@/../__mocks__/modules/backend/data/repositories";
 import { CategoryValidation } from "@/modules/backend/data/validations";
 import { DeleteCategoryService } from "@/modules/backend/data/services/category";
-import { missingParamError } from "@/modules/backend/data/helpers";
+import {
+  invalidParamError,
+  missingParamError,
+  noRegisteredError,
+} from "@/modules/backend/data/helpers";
 import { serverError } from "@/modules/backend/presentation/helpers";
+import { IdValidation } from "@/modules/backend/domain/validations";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
+  idValidator: IdValidation;
   sut: DeleteCategoryController;
 }
 
@@ -27,7 +33,7 @@ const makeSut = (): SutResponse => {
   );
   const sut = new DeleteCategoryController(deleteCategoryService);
 
-  return { categoryRepository, sut };
+  return { categoryRepository, idValidator, sut };
 };
 
 describe("DeleteCategoryController", () => {
@@ -39,18 +45,45 @@ describe("DeleteCategoryController", () => {
     expect(httpResponse.statusCode).toBe(400);
     expect(httpResponse.error).toBe(missingParamError("ID").message);
   });
+  test("should be return 400 if invalid id is provided", async () => {
+    const { sut } = makeSut();
+
+    const httpResponse = await sut.handle({ params: { id: "invalid_id" } });
+
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.error).toBe(invalidParamError("ID").message);
+  });
+  test("should be return 400 if no registered id is provided", async () => {
+    const { idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
+
+    const httpResponse = await sut.handle({
+      params: { id: "no_registered_id" },
+    });
+
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.error).toBe(noRegisteredError("categoria").message);
+  });
   test("should be return 200 if category is deleted", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
-      .mockResolvedValueOnce({ id: "any_id", name: "any_category" });
+      .mockResolvedValueOnce({ id: "valid_id", name: "any_category" });
 
-    const httpResponse = await sut.handle({ params: { id: "any_id" } });
+    const httpResponse = await sut.handle({ params: { id: "valid_id" } });
 
     expect(httpResponse.statusCode).toBe(200);
   });
   test("should be return 500 if server fails", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
       .mockRejectedValueOnce(serverError());

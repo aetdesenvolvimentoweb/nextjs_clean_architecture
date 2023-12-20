@@ -41,16 +41,25 @@ describe("UpdateCategoryService", () => {
     ).rejects.toThrow(missingParamError("ID"));
   });
   test("should be throws if invalid id is provided", async () => {
-    const { idValidator, sut } = makeSut();
-    jest
-      .spyOn(idValidator, "isValid")
-      .mockImplementationOnce((id: string) => false);
+    const { sut } = makeSut();
 
     await expect(
       sut.update("invalid_id", {
         name: "updated_category",
       })
     ).rejects.toThrow(invalidParamError("ID"));
+  });
+  test("should be throws no registered id is provided", async () => {
+    const { idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
+
+    await expect(
+      sut.update("invalid_id", {
+        name: "updated_category",
+      })
+    ).rejects.toThrow(noRegisteredError("categoria"));
   });
   test("should be throws if no name is provided", async () => {
     const { sut } = makeSut();
@@ -62,7 +71,10 @@ describe("UpdateCategoryService", () => {
     ).rejects.toThrow(missingParamError("nome"));
   });
   test("should be throws if no registered id is provided", async () => {
-    const { sut } = makeSut();
+    const { idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
 
     await expect(
       sut.update("no_registered_id", {
@@ -71,7 +83,10 @@ describe("UpdateCategoryService", () => {
     ).rejects.toThrow(noRegisteredError("categoria"));
   });
   test("should be throws if duplicated name is provided", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
       .mockResolvedValueOnce({ id: "another_id", name: "any_category" });
@@ -80,20 +95,23 @@ describe("UpdateCategoryService", () => {
       .mockResolvedValueOnce({ id: "another_id", name: "duplicated_category" });
 
     await expect(
-      sut.update("any_id", { name: "duplicated_category" })
+      sut.update("valid_id", { name: "duplicated_category" })
     ).rejects.toThrow(duplicatedKeyError("nome"));
   });
   test("should be return a updated category if correct data is provided", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
-      .mockResolvedValueOnce({ id: "any_id", name: "updated_category" });
+      .mockResolvedValueOnce({ id: "valid_id", name: "updated_category" });
     jest
       .spyOn(categoryRepository, "getByName")
-      .mockResolvedValueOnce({ id: "any_id", name: "updated_category" });
+      .mockResolvedValueOnce({ id: "valid_id", name: "updated_category" });
 
     await expect(
-      sut.update("any_id", { name: "updated_category" })
+      sut.update("valid_id", { name: "updated_category" })
     ).resolves.not.toThrow();
   });
 });

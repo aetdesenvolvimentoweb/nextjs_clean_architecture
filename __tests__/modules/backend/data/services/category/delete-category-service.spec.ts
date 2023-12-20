@@ -46,14 +46,20 @@ describe("DeleteCategoryService", () => {
     );
   });
   test("should be throws if no registered ID is provided", async () => {
-    const { sut } = makeSut();
+    const { idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
 
     await expect(sut.delete("no_registered_id")).rejects.toThrow(
       noRegisteredError("categoria")
     );
   });
   test("should be returns the deleted category if correct data is provided", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
       .mockResolvedValue({ id: "any_id", name: "any_category" });

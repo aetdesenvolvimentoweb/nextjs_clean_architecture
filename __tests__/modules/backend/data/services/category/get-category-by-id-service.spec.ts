@@ -49,14 +49,20 @@ describe("GetCategoryByIdService", () => {
     );
   });
   test("should be throws if no registered ID is provided", async () => {
-    const { sut } = makeSut();
+    const { idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
 
     await expect(sut.getById("no_registered_id")).rejects.toThrow(
       noRegisteredError("categoria")
     );
   });
   test("should be return a category if a registered ID is provided", async () => {
-    const { categoryRepository, sut } = makeSut();
+    const { categoryRepository, idValidator, sut } = makeSut();
+    jest
+      .spyOn(idValidator, "isValid")
+      .mockImplementationOnce((id: string) => true);
     jest
       .spyOn(categoryRepository, "getById")
       .mockResolvedValue({ id: "any_id", name: "any_category" });
