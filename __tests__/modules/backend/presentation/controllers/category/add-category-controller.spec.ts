@@ -5,6 +5,7 @@ import {
   MockCategoryRepository,
   MockIdValidator,
 } from "../../../../../../__mocks__/modules/backend/data/repositories";
+import { missingParamError } from "@/modules/backend/data/helpers";
 
 interface SutResponse {
   sut: AddCategoryController;
@@ -27,6 +28,14 @@ const makeSut = (): SutResponse => {
 };
 
 describe("AddCategoryController", () => {
+  test("should be return 400 if no name is provided", async () => {
+    const { sut } = makeSut();
+
+    await expect(sut.handle({ body: { name: "" } })).resolves.toEqual({
+      error: missingParamError("nome").message,
+      statusCode: 400,
+    });
+  });
   test("should be return 201 if category is created", async () => {
     const { sut } = makeSut();
 

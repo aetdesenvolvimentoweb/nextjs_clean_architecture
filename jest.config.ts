@@ -16,6 +16,7 @@ export const customJestConfig: Config = {
     "!<rootDir>/src/modules/backend/domain/usecases/**/*.ts",
     "!<rootDir>/src/modules/backend/domain/validations/*.ts",
     "!<rootDir>/src/modules/backend/data/repositories/*.ts",
+    "!<rootDir>/src/modules/backend/presentation/protocols/**/*.ts",
   ],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
