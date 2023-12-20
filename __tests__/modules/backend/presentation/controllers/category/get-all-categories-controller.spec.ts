@@ -1,11 +1,8 @@
 import { CategoryRepository } from "@/modules/backend/data/repositories";
 import { GetAllCategoriesController } from "@/modules/backend/presentation/controllers/category";
-import {
-  MockCategoryRepository,
-  MockIdValidator,
-} from "../../../../../../__mocks__/modules/backend/data/repositories";
-import { CategoryValidation } from "@/modules/backend/data/validations";
+import { MockCategoryRepository } from "@/../__mocks__/modules/backend/data/repositories";
 import { GetAllCategoriesService } from "@/modules/backend/data/services/category";
+import { serverError } from "@/modules/backend/presentation/helpers";
 
 interface SutResponse {
   categoryRepository: CategoryRepository;
@@ -32,5 +29,15 @@ describe("GetAllCategoriesController", () => {
     expect(Array.isArray(httpResponse.data)).toBe(true);
     expect(httpResponse.data[0]).toHaveProperty("id");
     expect(httpResponse.data[0]).toHaveProperty("name");
+  });
+  test("should be return 500 if server fails", async () => {
+    const { categoryRepository, sut } = makeSut();
+    jest
+      .spyOn(categoryRepository, "getAll")
+      .mockRejectedValueOnce(serverError());
+
+    const httpResponse = await sut.handle({});
+
+    expect(httpResponse.statusCode).toBe(500);
   });
 });
