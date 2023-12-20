@@ -1,6 +1,10 @@
 import { GetCategoryByIdService } from "@/modules/backend/data/services/category";
-import { Controller, HttpRequest, HttpResponse } from "../../protocols";
-import { customAppError } from "../../helpers";
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+} from "@/modules/backend/presentation/protocols";
+import { customAppError } from "@/modules/backend/presentation/helpers";
 
 export class GetCategoryByIdController implements Controller {
   constructor(

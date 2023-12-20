@@ -49,4 +49,14 @@ describe("GetCategoryByIdController", () => {
 
     expect(httpResponse.statusCode).toBe(200);
   });
+  test("should be return 500 if server fails", async () => {
+    const { categoryRepository, sut } = makeSut();
+    jest
+      .spyOn(categoryRepository, "getById")
+      .mockRejectedValueOnce(serverError());
+
+    const httpResponse = await sut.handle({ params: { id: "any_id" } });
+
+    expect(httpResponse.statusCode).toBe(500);
+  });
 });
