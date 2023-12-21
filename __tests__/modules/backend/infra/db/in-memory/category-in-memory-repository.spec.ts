@@ -1,5 +1,5 @@
 import { CategoryRepository } from "@/modules/backend/data/repositories";
-import { CategoryInMemoryRepository } from "@/modules/backend/infra/db/in-memory/category-in-memory-repository";
+import { CategoryInMemoryRepository } from "@/modules/backend/infra/db/in-memory";
 
 interface SutResponse {
   sut: CategoryRepository;
