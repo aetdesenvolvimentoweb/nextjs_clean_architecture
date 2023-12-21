@@ -6,9 +6,12 @@ import {
 
 export const adaptNextjsRoute = async (
   controller: Controller,
-  request: HttpRequest
+  request: Request,
+  params: any = null
 ) => {
-  const httpResponse = await controller.handle(request);
+  let httpRequest = { body: request.body ? await request.json() : {}, params };
+
+  const httpResponse = await controller.handle(httpRequest);
 
   if (httpResponse.error) {
     return NextResponse.json(
